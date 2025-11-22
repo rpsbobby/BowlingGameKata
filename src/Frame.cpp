@@ -14,11 +14,11 @@ int Frame::total() const {
     return _first_roll + _second_roll;
 }
 
-bool Frame::strike() const {
+bool Frame::is_strike() const {
     return _first_roll == 10;
 }
 
-bool Frame::spare() const {
+bool Frame::is_spare() const {
     return total() == 10 && _first_roll != 10;
 }
 

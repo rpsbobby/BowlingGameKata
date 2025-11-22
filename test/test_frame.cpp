@@ -51,7 +51,7 @@ TEST(Frame, should_create_valid_strike) {
 
 TEST(Frame, should_return_strike) {
     Frame frame{10};
-    ASSERT_TRUE(frame.strike());
+    ASSERT_TRUE(frame.is_strike());
 }
 
 // ---------------------------------------------
@@ -69,7 +69,7 @@ class SpareTests : public ::testing::TestWithParam<SpareTestCase> {
 TEST_P(SpareTests, should_return_valid_spare) {
     const auto &tc = GetParam();
     Frame frame{tc.rolls[0], tc.rolls[1]};
-    EXPECT_EQ(frame.spare(), tc.expected_spare);
+    EXPECT_EQ(frame.is_spare(), tc.expected_spare);
 }
 
 static const SpareTestCase spare_cases[] = {

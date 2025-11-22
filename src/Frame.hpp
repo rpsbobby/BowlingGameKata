@@ -8,13 +8,9 @@
 class Frame {
 public:
     explicit Frame(int first_roll, int second_roll = 0);
-
-
     int total() const;
-
-    bool strike() const;
-
-    bool spare() const;
+    bool is_strike() const;
+    bool is_spare() const;
 
 private:
     void validate_input();

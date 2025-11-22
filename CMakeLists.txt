@@ -22,6 +22,12 @@ enable_testing()
 add_library(bowling_game
         src/Frame.cpp
         src/Frame.hpp
+        src/bowling_game.cpp
+        src/bowling_game.hpp
+        src/frame_counter.cpp
+        src/frame_counter.hpp
+        src/bonus.cpp
+        src/bonus.hpp
 )
 target_include_directories(bowling_game PUBLIC src)
 
@@ -30,6 +36,9 @@ target_include_directories(bowling_game PUBLIC src)
 # --------------------------
 add_executable(bowling_tests
         test/test_frame.cpp
+        test/test_game.cpp
+        test/test_frame_counter.cpp
+        test/test_bonus.cpp
 )
 
 target_link_libraries(bowling_tests

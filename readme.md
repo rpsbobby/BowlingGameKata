@@ -1,6 +1,7 @@
 # 🎳 Bowling Game TDD Kata (C++)
 
-This repository implements the classic **Bowling Game TDD Kata** in modern **C++** using a strict test-driven workflow. The goal is to practice incremental design, clean abstractions, and disciplined testing.
+This repository implements the classic **Bowling Game TDD Kata** in modern **C++** using a strict test-driven workflow.
+The goal is to practice incremental design, clean abstractions, and disciplined testing.
 
 ---
 

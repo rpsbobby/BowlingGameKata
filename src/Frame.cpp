@@ -22,6 +22,14 @@ bool Frame::is_spare() const {
     return total() == 10 && _first_roll != 10;
 }
 
+int Frame::first_roll() const {
+    return _first_roll;
+}
+
+int Frame::second_roll() const {
+    return _second_roll;
+}
+
 void Frame::validate_input() {
     if (_first_roll > 10 || _first_roll < 0 || _second_roll > 10 || _second_roll < 0)
         throw std::invalid_argument("Roll must be between 0 and 10");

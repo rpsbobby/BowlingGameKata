@@ -4,7 +4,6 @@
 #include "bonus.hpp"
 #include "Frame.hpp"
 #include "frame_counter.hpp"
-#include "tests_utils.hpp"
 #include "gtest/gtest.h"
 
 TEST(FrameCounterSuite, should_add_valid_frame) {

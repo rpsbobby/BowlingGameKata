@@ -7,20 +7,30 @@
 #include "gtest/gtest.h"
 
 struct ScoreTestCases {
+    FrameFactoryHelper option;
+    const BonusFactoryHelper bonus;
     int expected;
 };
 
-class ScoreTests : public testing::TestWithParam<ScoreTestCases> {};
+class ScoreTests : public testing::TestWithParam<ScoreTestCases> {
+};
 
 TEST_P(ScoreTests, should_validate_final_score) {
-    auto const &[expected] = GetParam();
+    auto const &[option, bonus_option, expected] = GetParam();
     FrameCounter counter;
+    for (auto const &f: make_frames(option))
+        counter.add_frame(f);
+    if (bonus_option != BonusFactoryHelper::NONE)
+        counter.add_bonus(make_bonus(bonus_option));
+
     int actual = counter.get_score();
     ASSERT_EQ(expected, actual);
 }
 
-static const ScoreTestCases score_cases[] = {
-{1},
+static constexpr ScoreTestCases score_cases[] = {
+    {FrameFactoryHelper::GUTTER, BonusFactoryHelper::NONE, 0,},
+    {FrameFactoryHelper::ONES, BonusFactoryHelper::NONE, 20,},
+    {FrameFactoryHelper::COMPLETE, BonusFactoryHelper::NONE, 90,},
 };
 
 INSTANTIATE_TEST_SUITE_P(

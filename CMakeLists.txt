@@ -46,6 +46,7 @@ add_executable(bowling_tests
         test/test_frame_invalid.cpp
         test/test_frame_counter_completeness_bonus.cpp
         test/test_frame_counter_scoring.cpp
+        test/test_frame_counter_scoring_freestanding.cpp
 )
 
 target_link_libraries(bowling_tests

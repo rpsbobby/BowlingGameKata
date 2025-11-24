@@ -11,6 +11,8 @@ public:
     int total() const;
     bool is_strike() const;
     bool is_spare() const;
+    int first_roll() const;
+    int second_roll() const;
 
 private:
     void validate_input();

@@ -42,7 +42,14 @@ bool FrameCounter::add_bonus(Bonus bonus) {
 }
 
 int FrameCounter::get_score() const {
-    return 0;
+    if (!is_complete())
+        throw std::logic_error("Cannot compute score: game is not complete");
+    int score = 0;
+    for (const auto &f: _frames) {
+        score += f.first_roll();
+        score += f.second_roll();
+    }
+    return  score;
 }
 
 bool FrameCounter::with_bonus() const {

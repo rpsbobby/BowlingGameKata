@@ -49,6 +49,15 @@ int FrameCounter::get_score() const {
         score += f.first_roll();
         score += f.second_roll();
     }
+    if (_bonus.has_value()) {
+        if (_bonus.value().type == BonusType::Spare) {
+            score += _bonus.value().first;
+        } else if (_bonus.value().type == BonusType::Strike) {
+            score += _bonus.value().first;
+            score += _bonus.value().second;
+        }
+    }
+
     return  score;
 }
 

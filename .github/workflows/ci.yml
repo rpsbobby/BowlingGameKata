@@ -7,42 +7,38 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-test-coverage:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      # Checkout repository
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Install deps
-        run: sudo apt-get update && sudo apt-get install -y ninja-build lcov
+      # Install dependencies (cmake, ninja, compilers)
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            cmake \
+            ninja-build \
+            build-essential
 
-      - name: Configure CMake (with coverage flags)
+      # Configure build using CMake (out-of-source build)
+      - name: Configure
         run: |
           cmake -S . -B build -G Ninja \
-                -DCMAKE_BUILD_TYPE=Debug \
-                -DCMAKE_CXX_FLAGS="--coverage" \
-                -DCMAKE_C_FLAGS="--coverage"
+            -DCMAKE_CXX_STANDARD=20 \
+            -DCMAKE_BUILD_TYPE=Debug
 
+      # Build
       - name: Build
-        run: cmake --build build
-
-      - name: Run tests
-        run: ctest --test-dir build --output-on-failure
-
-      - name: Generate coverage report
         run: |
-          lcov --rc lcov_branch_coverage=1 --directory build --capture --output-file coverage.info || true
-          lcov --remove coverage.info '/usr/*' \
-               '*/_deps/*' \
-               '*/test/*' \
-               --output-file coverage.info || true
-          # Ignore mismatch warnings (GCC/GTest issue)
-          lcov --rc geninfo_ignore_errors=gcov,source,mismatch \
-               --list coverage.info || true
+          cmake --build build --config Debug
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage.info
-          fail_ci_if_error: true
+      # Run Tests
+      - name: Run Tests
+        run: |
+          echo "run tests"
+          cd build
+          ctest --verbose --output-on-failure

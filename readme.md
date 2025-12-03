@@ -1,7 +1,6 @@
 # 🎳 Bowling Game Engine – Modern C++20, TDD, and Full Test Suite
 
 ![Build](https://github.com/rpsbobby/BowlingGameKata/actions/workflows/ci.yml/badge.svg)
-[![codecov](https://codecov.io/gh/rpsbobby/BowlingGameKata/branch/main/graph/badge.svg)](https://codecov.io/gh/rpsbobby/BowlingGameKata)
 ![Clang-Format](https://img.shields.io/badge/format-clangformat-success)
 
 ---

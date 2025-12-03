@@ -1,124 +1,206 @@
-# 🎳 Bowling Game TDD Kata (C++)
+# 🎳 Bowling Game Engine – Modern C++20, TDD, and Full Test Suite
 
-This repository implements the classic **Bowling Game TDD Kata** in modern **C++** using a strict test-driven workflow.
-The goal is to practice incremental design, clean abstractions, and disciplined testing.
+A complete and fully-tested **Bowling scoring engine** implemented in idiomatic **C++20** using a strict **Test-Driven Development** workflow.
 
----
+This project goes beyond the classic kata: it models bowling as a small domain with **Frames**, **Bonuses**, and a **FrameCounter** that enforces all game rules with strong types and explicit error handling.
 
-## 📌 Overview
-
-The kata implements a scoring engine for a standard 10-frame bowling game:
-
-* A game consists of **20 rolls** (or fewer with strikes).
-* A spare adds the next roll as a bonus.
-* A strike adds the next **two** rolls as a bonus.
-* The 10th frame may contain extra rolls.
-
-The challenge is **not the algorithm**, but the discipline of:
-
-* Writing only the minimal code needed to pass each test.
-* Adding complexity *only* when a new failing test requires it.
-* Keeping code small and expressive.
+> **Highlights**
+>
+> * 70+ GoogleTest tests (including parameterized and fuzz tests)
+> * Strong domain model with strict validation
+> * Deterministic scoring with full rules enforcement
+> * Modern C++20 patterns (value semantics, RAII, clean APIs)
+> * CMake + GoogleTest project structure
 
 ---
 
-## 🧪 Testing Setup (Catch2)
+## 🚀 Features
 
-This project uses **Catch2** for unit testing.
+### ✔ Complete Bowling Rule Engine
 
-### Example test
+Implements all official scoring rules:
 
-```cpp
-TEST_CASE("Gutter game scores 0") {
-    Game g;
-    for (int i = 0; i < 20; ++i) g.roll(0);
-    REQUIRE(g.score() == 0);
-}
-```
+* 10 frames per game
+* Strike → next **two** rolls as bonus
+* Spare → next **one** roll as bonus
+* 10th frame may include 1–2 bonus rolls
+* Impossible states are rejected
+
+### ✔ Strong Domain Model
+
+| Class          | Responsibility                                                      |
+| -------------- | ------------------------------------------------------------------- |
+| `Frame`        | Represents a single frame, validates rolls, identifies strike/spare |
+| `Bonus`        | Enforces valid bonus rules for final frame                          |
+| `FrameCounter` | Core engine: scoring, bonus handling, game completeness             |
+
+### ✔ Explicit Error Types
+
+* `InvalidRollError`
+* `InvalidBonusError`
+* `TooManyFramesError`
+* `IncompleteGameError`
+
+No silent failures — invalid states are impossible.
+
+### ✔ Comprehensive Test Suite
+
+Includes:
+
+* Unit tests for each component
+* Parameterized tests
+* Completeness logic tests
+* Bonus rules tests
+* Full scoring tests
+* **Fuzz tests** generating random valid/invalid games
 
 ---
 
 ## 📁 Project Structure
 
 ```
-/ (root)
+project_root/
 │── CMakeLists.txt
 │── src/
-│    └── Game.hpp
-│    └── Game.cpp
-│── tests/
-│    └── test_game.cpp
-│── build/ (ignored)
+│    ├── Frame.hpp / Frame.cpp
+│    ├── bonus.hpp / bonus.cpp
+│    ├── frame_counter.hpp / frame_counter.cpp
+│    ├── errors.hpp
+│
+│── test/
+│    ├── test_frame.cpp
+│    ├── test_frame_invalid.cpp
+│    ├── test_frame_spare.cpp
+│    ├── test_bonus_ctor.cpp
+│    ├── test_bonus.cpp
+│    ├── test_frame_counter.cpp
+│    ├── test_frame_counter_bonus.cpp
+│    ├── test_frame_counter_completeness.cpp
+│    ├── test_frame_counter_completeness_bonus.cpp
+│    ├── test_frame_counter_scoring.cpp
+│    ├── test_frame_counter_scoring_freestanding.cpp
+│    └── test_fuzz_random_games.cpp
 ```
 
 ---
 
 ## 🛠️ Building
 
-```bash
+```
 mkdir build && cd build
 cmake ..
-make
+make -j
 ```
-
----
 
 ## ▶️ Running Tests
 
-```bash
-./tests/test_game
+```
+ctest --verbose
+```
+
+or:
+
+```
+./bowling_tests
 ```
 
 ---
 
-## 💡 TDD Steps (Recommended)
+## 🧠 Key Design Decisions
 
-Follow these in strict order:
+### 1️⃣ No Invalid State Can Exist
 
-### 1. Gutter Game
+Constructors validate input immediately — the domain model forbids impossible bowling states.
 
-```
-roll(0) × 20 → score = 0
-```
+### 2️⃣ Value Semantics
 
-### 2. All Ones
+`Frame` and `Bonus` are immutable, self-contained, easy to reason about.
 
-```
-roll(1) × 20 → score = 20
-```
+### 3️⃣ Transparent Scoring
 
-### 3. Single Spare
+Scoring is deterministic:
 
 ```
-5,5,3 → bonus = 3
+rolls = flatten all rolls
+for each frame:
+    score += strike/spare/open logic
 ```
 
-### 4. Single Strike
+### 4️⃣ Explicit Completeness Rules
 
-```
-10, 3, 4 → bonus = 3+4
-```
+`get_score()` throws if the game is not complete.
 
-### 5. Perfect Game
+### 5️⃣ Clean, Maintainable Code
 
-```
-12 × 10 → score = 300
-```
-
-Each step adds **one test**, run → watch fail → implement smallest fix.
+No mutation during scoring, no hidden dependencies.
 
 ---
 
-## 🎯 Goals
+## 🧪 Example Fuzz Test
 
-* Learn disciplined incremental design.
-* Practice clean, minimal C++.
-* Reinforce STL usage, value semantics, and RAII.
-* Keep Game class focused and tiny.
+```
+TEST(FuzzGames, random_valid_sequences_must_not_throw) {
+    for (int i = 0; i < 5000; ++i) {
+        FrameCounter fc;
+        auto frames = random_valid_game();
+        for (auto& f : frames.base_frames)
+            ASSERT_NO_THROW(fc.add_frame(f));
+
+        if (frames.bonus)
+            ASSERT_NO_THROW(fc.add_bonus(*frames.bonus));
+
+        ASSERT_NO_THROW(fc.get_score());
+    }
+}
+```
 
 ---
 
-## 🙌 Notes
+## 📈 What This Project Demonstrates
 
-This kata is intentionally simple.
-Treat it like sharpening a knife — you get better at everything else by practicing precision here.
+Perfect for portfolio reviewers:
+
+### 💎 Modern C++20 Design
+
+* Value semantics
+* Strong invariants
+* Clean separation of responsibilities
+
+### 🧪 Professional Testing Practices
+
+* Parameterized tests
+* Boundary testing
+* Exception testing
+* Fuzzing
+
+### ⚙️ Tooling Mastery
+
+* Modern CMake
+* GoogleTest integration
+* Organized project layout
+
+---
+
+## 🎯 Future Enhancements
+
+* CLI scoring tool
+* JSON input/output
+* Scoreboard rendering
+* Integration tests for full game simulations
+
+---
+
+## 📜 License
+
+MIT
+
+---
+
+If you want, I can also prepare:
+
+* UML diagrams
+* A GitHub banner
+* A CI workflow (GitHub Actions)
+* Badges (C++20 / tests / CMake)
+
+Just tell me: **“add diagrams”**, **“add CI”**, or **“add badges”**!

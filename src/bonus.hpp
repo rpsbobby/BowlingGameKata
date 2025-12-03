@@ -11,19 +11,19 @@ using namespace bowling;
 enum class BonusType { None, Spare, Strike };
 
 struct Bonus {
-  const BonusType type;
-  const int first;
-  const int second;
+    const BonusType type;
+    const int first;
+    const int second;
 
-  Bonus();
+    Bonus();
 
-  Bonus(BonusType t, int r1, int r2 = invalid);
-  ;
+    Bonus(BonusType t, int r1, int r2 = invalid);
+    ;
 
 private:
-  static constexpr int invalid = -1;
+    static constexpr int invalid = -1;
 
-  void validate() const;
+    void validate() const;
 };
 
 #endif // BOWLINGGAMEKATA_BONUS_HPP
